@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/antigravity/ontologies/stem-physics#"
+     xml:base="http://www.semanticweb.org/antigravity/ontologies/stem-physics"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/antigravity/ontologies/stem-physics"/>
+
+    <!-- Physical Quantity Classes -->
+    <owl:Class rdf:about="#PhysicalQuantity"/>
+
+    <owl:Class rdf:about="#Displacement">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Displacement</rdfs:label>
+        <rdfs:comment>aliases: s, d, x, y, h, delta_x, delta_y, \Delta x, \Delta y</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#InitialVelocity">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>InitialVelocity</rdfs:label>
+        <rdfs:comment>aliases: u, v0, v_0, v_i, vi, u_x, u_y</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#FinalVelocity">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>FinalVelocity</rdfs:label>
+        <rdfs:comment>aliases: v, vf, v_f, v_x, v_y</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Acceleration">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Acceleration</rdfs:label>
+        <rdfs:comment>aliases: a, g, a_x, a_y</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Time">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Time</rdfs:label>
+        <rdfs:comment>aliases: t, delta_t, \Delta t, T</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Force">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Force</rdfs:label>
+        <rdfs:comment>aliases: F, f, N, T_tension, F_net, F_ext</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Mass">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Mass</rdfs:label>
+        <rdfs:comment>aliases: m, M, m1, m2</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#Work">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>Work</rdfs:label>
+        <rdfs:comment>aliases: W, w, Work</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#KineticEnergy">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>KineticEnergy</rdfs:label>
+        <rdfs:comment>aliases: KE, K, E_k, Ek</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="#PotentialEnergy">
+        <rdfs:subClassOf rdf:resource="#PhysicalQuantity"/>
+        <rdfs:label>PotentialEnergy</rdfs:label>
+        <rdfs:comment>aliases: PE, U, E_p, Ep</rdfs:comment>
+    </owl:Class>
+
+    <!-- Derivation Law Classes -->
+    <owl:Class rdf:about="#ScientificLaw"/>
+
+    <owl:Class rdf:about="#Kinematics">
+        <rdfs:subClassOf rdf:resource="#ScientificLaw"/>
+        <rdfs:label>Kinematics</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#NewtonsSecondLaw">
+        <rdfs:subClassOf rdf:resource="#ScientificLaw"/>
+        <rdfs:label>NewtonsSecondLaw</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#WorkEnergyTheorem">
+        <rdfs:subClassOf rdf:resource="#ScientificLaw"/>
+        <rdfs:label>WorkEnergyTheorem</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="#ConservationOfEnergy">
+        <rdfs:subClassOf rdf:resource="#ScientificLaw"/>
+        <rdfs:label>ConservationOfEnergy</rdfs:label>
+    </owl:Class>
+</rdf:RDF>

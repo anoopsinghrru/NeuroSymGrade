@@ -1,0 +1,263 @@
+{
+  "problems": [
+    {
+      "problem_id": "prob_falling_object",
+      "title": "Velocity and Work of Falling Object under Constant Acceleration (Scenarios 1 & 2)",
+      "description": "An object of mass m=2kg drops from rest (u=0) under gravity a=10m/s^2 for time t=2s across distance s=20m. Find velocity, displacement, and work done.",
+      "strategies": [
+        {
+          "strategy_id": "strat_kinematics",
+          "name": "Kinematics & Newton Approach",
+          "description": "Solve using standard kinematic relations followed by work calculation",
+          "and_dependency_dag": {
+            "1": [],
+            "2": [
+              1
+            ],
+            "3": [
+              2
+            ]
+          },
+          "steps": [
+            {
+              "step_id": 1,
+              "concept": "Kinematics",
+              "canonical_equation": "v = u + a*t",
+              "expected_bindings": {
+                "u": 0.0,
+                "a": 10.0,
+                "t": 2.0
+              },
+              "expected_output_value": 20.0,
+              "max_marks": 5.0,
+              "prerequisites": []
+            },
+            {
+              "step_id": 2,
+              "concept": "Kinematics",
+              "canonical_equation": "s = (u + v)/2 * t",
+              "expected_bindings": {
+                "u": 0.0,
+                "v": 20.0,
+                "t": 2.0
+              },
+              "expected_output_value": 20.0,
+              "max_marks": 5.0,
+              "prerequisites": [
+                1
+              ]
+            },
+            {
+              "step_id": 3,
+              "concept": "WorkEnergyTheorem",
+              "canonical_equation": "W = F * s",
+              "expected_bindings": {
+                "F": 20.0,
+                "s": 20.0
+              },
+              "expected_output_value": 400.0,
+              "max_marks": 5.0,
+              "prerequisites": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "strategy_id": "strat_energy",
+          "name": "Work-Energy Conservation Approach",
+          "description": "Solve using direct work-energy theorem",
+          "and_dependency_dag": {
+            "1": []
+          },
+          "steps": [
+            {
+              "step_id": 1,
+              "concept": "WorkEnergyTheorem",
+              "canonical_equation": "W = 0.5 * m * v^2",
+              "expected_bindings": {
+                "m": 2.0,
+                "v": 20.0
+              },
+              "expected_output_value": 400.0,
+              "max_marks": 15.0,
+              "prerequisites": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "problem_id": "prob_combined_leap",
+      "title": "Force from Velocity Change without Explicit Acceleration (Scenario 3)",
+      "description": "Object of mass m=2kg accelerates from rest (u=0) to v=10m/s over distance s=10m. Find Force F directly.",
+      "strategies": [
+        {
+          "strategy_id": "strat_leap",
+          "name": "Newton & Kinematics Multi-Step Ideal",
+          "description": "Rubric expects intermediate acceleration calculation, but accepts combined leap via Gröbner basis",
+          "and_dependency_dag": {
+            "1": [],
+            "2": [
+              1
+            ],
+            "3": [
+              2
+            ]
+          },
+          "steps": [
+            {
+              "step_id": 1,
+              "concept": "NewtonsSecondLaw",
+              "canonical_equation": "F = m * a",
+              "expected_bindings": {
+                "m": 2.0,
+                "a": 5.0
+              },
+              "expected_output_value": 10.0,
+              "max_marks": 5.0,
+              "prerequisites": []
+            },
+            {
+              "step_id": 2,
+              "concept": "Kinematics",
+              "canonical_equation": "v^2 - u^2 = 2 * a * s",
+              "expected_bindings": {
+                "u": 0.0,
+                "a": 5.0,
+                "s": 10.0
+              },
+              "expected_output_value": 100.0,
+              "max_marks": 5.0,
+              "prerequisites": [
+                1
+              ]
+            },
+            {
+              "step_id": 3,
+              "concept": "WorkEnergyTheorem",
+              "canonical_equation": "W = F * s",
+              "expected_bindings": {
+                "F": 10.0,
+                "s": 10.0
+              },
+              "expected_output_value": 100.0,
+              "max_marks": 5.0,
+              "prerequisites": [
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "problem_id": "prob_independent_dag",
+      "title": "Independent Preconditions: Normal Force and Potential Energy (Scenario 4)",
+      "description": "Mass m=2kg at height s=20m under gravity a=10m/s^2. Normal force and potential energy can be written in either order.",
+      "strategies": [
+        {
+          "strategy_id": "strat_independent",
+          "name": "Partial-Order Independent Preconditions",
+          "description": "Normal force and PE are independent sub-goals in an AND branch",
+          "and_dependency_dag": {
+            "1": [],
+            "2": [],
+            "3": [
+              1,
+              2
+            ]
+          },
+          "steps": [
+            {
+              "step_id": 1,
+              "concept": "NewtonsSecondLaw",
+              "canonical_equation": "N = m * a",
+              "expected_bindings": {
+                "m": 2.0,
+                "a": 10.0
+              },
+              "expected_output_value": 20.0,
+              "max_marks": 5.0,
+              "prerequisites": []
+            },
+            {
+              "step_id": 2,
+              "concept": "ConservationOfEnergy",
+              "canonical_equation": "PE = m * a * s",
+              "expected_bindings": {
+                "m": 2.0,
+                "a": 10.0,
+                "s": 20.0
+              },
+              "expected_output_value": 400.0,
+              "max_marks": 5.0,
+              "prerequisites": []
+            },
+            {
+              "step_id": 3,
+              "concept": "WorkEnergyTheorem",
+              "canonical_equation": "W = PE",
+              "expected_bindings": {
+                "PE": 400.0
+              },
+              "expected_output_value": 400.0,
+              "max_marks": 5.0,
+              "prerequisites": [
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "problem_id": "prob_braking_distance",
+      "title": "Braking Distance Under Constant Deceleration",
+      "description": "A car moving at u=20 m/s decelerates at a=-4 m/s^2 under braking. Find time to stop and stopping distance.",
+      "strategies": [
+        {
+          "strategy_id": "strat_braking",
+          "name": "Kinematics Braking Approach",
+          "description": "Solve for time to stop then apply the displacement equation.",
+          "and_dependency_dag": {
+            "1": [],
+            "2": [
+              1
+            ]
+          },
+          "steps": [
+            {
+              "step_id": 1,
+              "concept": "Kinematics",
+              "canonical_equation": "t = (0 - u)/a",
+              "expected_bindings": {
+                "u": 20.0,
+                "a": -4.0
+              },
+              "expected_output_value": 5.0,
+              "max_marks": 2.86,
+              "prerequisites": []
+            },
+            {
+              "step_id": 2,
+              "concept": "General",
+              "canonical_equation": "s = u*t + 0.5*a*t^2",
+              "expected_bindings": {
+                "u": 20.0,
+                "a": -4.0,
+                "t": 5.0
+              },
+              "expected_output_value": 50.0,
+              "max_marks": 7.14,
+              "prerequisites": [
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

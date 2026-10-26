@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+.claude/
+# Test / cache artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime-generated audit reports (recreated by every grading run)
+reports/
+
+# Runtime-generated plots (recreated by every run; keep the committed demo image)
+ui/static/dempster_shafer_intervals.png
+ui/static/fuzzy_memberships.png
+ui/static/ga_convergence.png
+
+# EasyOCR downloaded model weights (if cached locally instead of in the user's home dir)
+.EasyOCR/
