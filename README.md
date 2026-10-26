@@ -15,8 +15,8 @@ The engine translates unstructured student text, LaTeX, or code derivations into
 | **Unit 1: Search** | **AO\* Search**, AND-OR Solution Graph, Heuristic Cost Functions | `src/search_alignment/aostar_rubric_matcher.py` | Automatically discovers which valid solution strategy the student attempted (OR branch) and evaluates sequential prerequisites (AND branch). |
 | **Unit 2: Logic & Languages** | **Predicate Logic**, **Non-Monotonic Logic**, **Fuzzy Logic**, SymPy, Prolog | `src/symbolic_math/sympy_verifier.py`, `kb_prolog/defeasible_rules.pl` | Canonical symbolic equivalence, Gröbner polynomial ideal membership, default rules, and continuous partial-credit scoring. |
 | **Unit 3: Knowledge & Uncertainty** | **Dempster-Shafer Theory**, Epistemic Conflict $K$, Yager's Combination Rule | `src/uncertainty_fuzzy/dempster_shafer.py` | Fuses noisy neural confidence ($m_1$) with discounted symbolic verification ($m_2$). High conflict $K$ triggers symbolic veto to defeat LLM hallucination. |
-| **Unit 4: Slot-and-Filler & Planning** | **Frames**, **OWL Ontology Grounding**, **Nonlinear Planning with Constraint Posting** | `src/models/step_frame.py`, `config/rubric_ontology.owl`, `src/symbolic_math/owl_grounding.py` | Extracts structured StepFrames; canonicalizes variable synonyms ($\Delta y, h \rightarrow s$); validates independent prerequisites in any topological order. |
-| **Unit 5: NLP & Neural Networks** | **Syntactic & Dependency Parsing**, Causal Connective Extraction, Concept Classification, **OCR (CRAFT detection + CRNN recognition)** | `src/perception_nlp/text_preprocessor.py`, `src/perception_nlp/neural_slot_extractor.py`, `src/perception_nlp/ocr_frontend.py` | Converts free-text derivations into claims, equations, and variable bindings; extracts causal markers (`"since"`, `"therefore"`); reads scanned/handwritten submissions via EasyOCR instead of requiring typed text. |
+| **Unit 4: Slot-and-Filler & Planning** | **Frames**, **OWL Ontology Grounding**, **Dimensional Analysis**, **Nonlinear Planning with Constraint Posting** | `src/models/step_frame.py`, `config/rubric_ontology.owl`, `src/symbolic_math/owl_grounding.py` | Extracts structured StepFrames; canonicalizes variable synonyms ($\Delta y, h \rightarrow s$); validates opt-in unit/dimensional correctness per step; validates independent prerequisites in any topological order. |
+| **Unit 5: NLP & Neural Networks** | **Syntactic & Dependency Parsing**, Causal Connective Extraction, Concept Classification (keyword + **sentence-embedding fallback**), **OCR (CRAFT detection + CRNN recognition)** | `src/perception_nlp/text_preprocessor.py`, `src/perception_nlp/neural_slot_extractor.py`, `src/perception_nlp/ocr_frontend.py` | Converts free-text derivations into claims, equations, and variable bindings; falls back to sentence-transformer cosine similarity when no keyword matches; extracts causal markers (`"since"`, `"therefore"`); reads scanned/handwritten submissions via EasyOCR instead of requiring typed text. |
 | **Unit 6: Expert Systems & Optimization** | **Backward-Chaining Explanation Facility**, **Numba-Accelerated Genetic Algorithm** | `src/reasoning_engine/explanation_facility.py`, `src/uncertainty_fuzzy/ga_calibrator.py` | Produces an auditable deduction proof tree (`WHY`/`HOW` queries); evolves fuzzy membership thresholds using delta-encoded chromosomes. |
 
 ---
@@ -79,6 +79,9 @@ The engine translates unstructured student text, LaTeX, or code derivations into
 │   ├── test_ocr_frontend.py              # OCR extraction + end-to-end pipeline consumption
 │   ├── test_rubric_synthesizer.py        # Rubric synthesis correctness + a brand-new topic
 │   ├── test_audit_report.py              # Report persistence + human-review flagging
+│   ├── test_api_server.py                # FastAPI endpoint tests (TestClient)
+│   ├── test_semantic_fallback_classifier.py  # Embedding-fallback classifier, zero-regression proof
+│   ├── test_unit_checking.py             # Dimensional-analysis opt-in, penalties, zero-regression proof
 │   ├── generate_sample_submission_image.py  # Renders a synthetic handwriting-style demo image
 │   └── test_end_to_end_scenarios.py      # All 5 canonical benchmark scenarios
 ├── ui/
@@ -146,7 +149,7 @@ engine's robustness to imperfect perception rather than a bug.
 
 ---
 
-## 6. Beyond the CLI: Persistence, Rubric Synthesis, API & Web UI
+## 5. Beyond the CLI: Persistence, Rubric Synthesis, API & Web UI
 
 The engine is no longer only a scripted CLI demo against three hardcoded
 problems. Four additions make it a real, extensible system — **without
@@ -208,7 +211,7 @@ streamlit run ui/web_app.py
 
 ---
 
-## 5. Sample Audit Deduction Tree Output
+## 6. Sample Audit Deduction Tree Output
 
 ```text
 # Verification & Grading Audit Report: DEMO_SCENARIO_2
