@@ -233,27 +233,29 @@
               "concept": "Kinematics",
               "canonical_equation": "t = (0 - u)/a",
               "expected_bindings": {
-                "u": 20.0,
-                "a": -4.0
+                "a": -4.0,
+                "u": 20.0
               },
               "expected_output_value": 5.0,
               "max_marks": 2.86,
-              "prerequisites": []
+              "prerequisites": [],
+              "require_units": true
             },
             {
               "step_id": 2,
-              "concept": "General",
+              "concept": "Kinematics",
               "canonical_equation": "s = u*t + 0.5*a*t^2",
               "expected_bindings": {
-                "u": 20.0,
+                "t": 5.0,
                 "a": -4.0,
-                "t": 5.0
+                "u": 20.0
               },
               "expected_output_value": 50.0,
               "max_marks": 7.14,
               "prerequisites": [
                 1
-              ]
+              ],
+              "require_units": true
             }
           ]
         }

@@ -8,7 +8,7 @@
       "strategy_id": "strat_braking",
       "name": "Kinematics Braking Approach",
       "description": "Solve for time to stop then apply the displacement equation.",
-      "master_solution": "Step 1: Given u=20, a=-4, time to stop is t = (0 - u)/a = (0 - 20)/-4 = 5\nStep 2: Stopping distance is s = u*t + 0.5*a*t^2 = 20*5 + 0.5*-4*25 = 50"
+      "master_solution": "Step 1: Given u=20, a=-4, time to stop is t = (0 - u)/a = (0 - 20)/-4 = 5 s\nStep 2: Stopping distance is s = u*t + 0.5*a*t^2 = 20*5 + 0.5*-4*25 = 50 m"
     }
   ]
 }

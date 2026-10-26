@@ -32,6 +32,9 @@ class NeuroSymbolicVerificationEngine:
     non-monotonic defeasible reasoning, and fuzzy partial-credit scoring.
     """
 
+    UNIT_MISSING_PENALTY = 0.90  # 10% deduction: correct value, unit omitted
+    UNIT_WRONG_PENALTY = 0.75    # 25% deduction: correct value, wrong/mismatched unit
+
     def __init__(self, config_path: Optional[str] = None):
         self.grounder = OWLGrounder()
         self.verifier = SymPyVerifier(self.grounder)
@@ -89,7 +92,8 @@ class NeuroSymbolicVerificationEngine:
                     expected_bindings=step_data.get("expected_bindings", {}),
                     expected_output_value=float(step_data["expected_output_value"]),
                     max_marks=float(step_data["max_marks"]),
-                    prerequisites=step_data.get("prerequisites", [])
+                    prerequisites=step_data.get("prerequisites", []),
+                    require_units=step_data.get("require_units", False)
                 )
                 steps.append(r_step)
 
@@ -203,6 +207,28 @@ class NeuroSymbolicVerificationEngine:
                 local_residual=s_step.local_residual,
                 max_marks=matched_r_step.max_marks
             )
+
+            # 3.5. Dimensional Analysis (Unit 4 ontology) -- opt-in per rubric step.
+            # Backward-compatible: a rubric step with require_units unset (default
+            # False) is never touched, so every pre-existing problem and documented
+            # benchmark score is unaffected.
+            if matched_r_step.require_units:
+                r_lhs, _ = self.verifier.parse_equation(matched_r_step.canonical_equation)
+                target_symbol = str(list(r_lhs.free_symbols)[0]) if r_lhs is not None and r_lhs.free_symbols else None
+                if target_symbol:
+                    unit_valid, unit_extracted = self.grounder.check_unit(target_symbol, s_step.raw_text)
+                    s_step.unit_required = True
+                    s_step.unit_provided = unit_extracted
+                    s_step.unit_valid = unit_valid
+                    if unit_valid is False:
+                        penalty = self.UNIT_WRONG_PENALTY if unit_extracted is not None else self.UNIT_MISSING_PENALTY
+                        awarded_marks = round(awarded_marks * penalty, 4)
+                        s_step.explanation += (
+                            f" [Unit check: expected a unit on {target_symbol}; "
+                            f"{'found mismatched unit ' + repr(unit_extracted) if unit_extracted else 'no unit provided'} "
+                            f"-> {int((1 - penalty) * 100)}% deduction applied.]"
+                        )
+
             s_step.final_score = awarded_marks
             evaluated_steps.append(s_step)
 

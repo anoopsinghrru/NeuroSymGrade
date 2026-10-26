@@ -40,7 +40,61 @@ class OWLGrounder:
         # Potential Energy -> PE
         "PE": "PE", "U": "PE", "E_p": "PE", "Ep": "PE",
     }
-    
+
+    # Expected SI unit per canonical symbol (Unit 4 ontology: physical quantity -> unit).
+    # Used by check_unit() for optional, backward-compatible dimensional-analysis grading.
+    CANONICAL_UNIT_MAP = {
+        "v": "m/s", "u": "m/s", "a": "m/s^2", "t": "s", "s": "m",
+        "F": "N", "m": "kg", "W": "J", "KE": "J", "PE": "J",
+    }
+
+    # Accepted spellings for each canonical SI unit. Matching is case-insensitive
+    # and whitespace-insensitive (see check_unit).
+    UNIT_ALIASES = {
+        "m/s": ["m/s", "ms^-1", "ms-1", "m s^-1", "meters/second", "meters per second", "m per s"],
+        "m/s^2": ["m/s^2", "m/s2", "ms^-2", "m s^-2", "meters/second^2", "meters per second squared"],
+        "s": ["s", "sec", "secs", "second", "seconds"],
+        "m": ["m", "meter", "meters", "metre", "metres"],
+        "N": ["n", "newton", "newtons"],
+        "kg": ["kg", "kilogram", "kilograms"],
+        "J": ["j", "joule", "joules"],
+    }
+
+    # Trailing unit token after the final numeric value in a derivation statement,
+    # e.g. "... = 20 m/s" -> "m/s", "... = 400 J" -> "J".
+    TRAILING_UNIT_REGEX = re.compile(
+        r'[+-]?\d+\.?\d*(?:[eE][+-]?\d+)?\s*([a-zA-Z](?:[a-zA-Z0-9\^/\-\s]{0,12}[a-zA-Z0-9\^])?)\s*$'
+    )
+
+    def extract_trailing_unit(self, text: str) -> Optional[str]:
+        """Extracts the unit token (if any) immediately following the final number in text."""
+        stripped = text.strip().rstrip(".")
+        match = self.TRAILING_UNIT_REGEX.search(stripped)
+        if not match:
+            return None
+        token = match.group(1).strip()
+        return token or None
+
+    def check_unit(self, canonical_symbol: str, raw_text: str) -> Tuple[Optional[bool], Optional[str]]:
+        """
+        Checks whether raw_text declares the expected SI unit for canonical_symbol.
+        Returns (matched, extracted_unit):
+        - (None, None)   -- this symbol has no expected unit registered (nothing to check).
+        - (False, None)  -- a unit was expected but none was found in the text.
+        - (True/False, extracted_unit) -- a unit token was found; whether it matches.
+        """
+        expected = self.CANONICAL_UNIT_MAP.get(canonical_symbol)
+        if expected is None:
+            return None, None
+
+        extracted = self.extract_trailing_unit(raw_text)
+        if extracted is None:
+            return False, None
+
+        accepted = {alias.lower().replace(" ", "") for alias in self.UNIT_ALIASES.get(expected, [expected])}
+        normalized = extracted.lower().replace(" ", "")
+        return normalized in accepted, extracted
+
     CONCEPT_TO_LAW = {
         "kinematics": "Kinematics",
         "motion": "Kinematics",

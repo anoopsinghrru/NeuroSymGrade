@@ -45,6 +45,11 @@ class StepFrame:
     final_score: float = 0.0                       # Defuzzified mark awarded for this step
     explanation: str = ""                          # Natural language audit trace from Explanation Facility
 
+    # Dimensional Analysis (Unit 4 ontology; opt-in per rubric step via require_units)
+    unit_required: bool = False
+    unit_provided: Optional[str] = None            # Raw unit token extracted from student text, if any
+    unit_valid: Optional[bool] = None               # None = not checked; True/False = checked result
+
 
 @dataclass
 class RubricStep:
@@ -57,6 +62,7 @@ class RubricStep:
     max_marks: float                               # Maximum marks available for this step
     prerequisites: List[int] = field(default_factory=list) # Steps that must causally precede this step
     is_leaf: bool = False
+    require_units: bool = False                     # Opt-in dimensional-analysis check (Unit 4 ontology)
 
 
 @dataclass

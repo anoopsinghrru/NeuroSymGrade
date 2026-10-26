@@ -93,7 +93,7 @@ The engine translates unstructured student text, LaTeX, or code derivations into
 
 ## 4. Running the Project
 
-### Execute All Unit & Benchmark Tests (18/18 Passing)
+### Execute All Unit & Benchmark Tests (51/51 Passing)
 ```bash
 python -m pytest tests/ -v
 ```
@@ -241,4 +241,44 @@ Total Awarded Marks: 9.38 / 15.00 (62.5%)
     +-- [PROVED] exception_ecf(Step_3)
         |-- [PROVED] depends_transitively(Step_3, Step_1)
         +-- [PROVED] root_arithmetic_slip(Step_1)
+```
+
+---
+
+## 7. Grading-Rigor Fixes: Honest Concept Classification & Dimensional Analysis
+
+Two targeted upgrades close real correctness gaps in the grading logic itself
+(not infrastructure), both proven to be **zero-regression** for every
+pre-existing problem and documented benchmark score.
+
+### 7.1 Semantic fallback for concept classification (Unit 5)
+`NeuralSlotExtractor` was pure keyword-density counting -- accurate for
+kinematics phrasing, but it silently defaulted to a flat `"ScientificLaw"`
+label (0.50 confidence) for anything outside that vocabulary, which could
+cause the AO* matcher to misalign steps (confirmed: an energy-conservation
+submission had its Step 2 and Step 3 swapped against the rubric). It now
+falls back to **sentence-embedding similarity** (`sentence-transformers`,
+`all-MiniLM-L6-v2`) against concept exemplar sentences *only* when no
+keyword matches at all -- a genuine independent neural signal, not keyword
+matching in disguise. Every case with an existing keyword match is
+untouched: `tests/test_semantic_fallback_classifier.py` proves all 5 CLI
+benchmark scenarios produce bit-for-bit identical scores whether the
+fallback is enabled or disabled.
+
+### 7.2 Opt-in dimensional analysis / unit checking (Unit 4 ontology)
+The engine previously compared only numeric residuals -- a student writing
+`20` instead of `20 m/s` got full credit. `OWLGrounder` now maps each
+canonical symbol to its expected SI unit and extracts/validates a trailing
+unit token from the student's text (`check_unit`). This is **opt-in per
+rubric step** (`require_units`, default `False`), so no pre-existing
+problem's score changes. `RubricSynthesizer` auto-opts a step in when the
+*master/reference solution itself* states a unit for that step -- author a
+solution with units, and grading units becomes part of the rubric for free.
+Missing a required unit costs 10% of that step's marks; providing the
+wrong unit (e.g. `cm/s` instead of `m/s`) costs 25%:
+
+```bash
+# prob_braking_distance was re-synthesized with units in its master solution
+# (config/example_synth_spec.json), so it now grades units automatically.
+python main.py --problem prob_braking_distance --image <scan_with_units.jpg>
 ```

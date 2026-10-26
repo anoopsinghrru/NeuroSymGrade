@@ -105,6 +105,16 @@ class RubricSynthesizer:
             complexity = self._step_complexity(canonical_eq)
             complexities.append(complexity)
 
+            # Auto-opt-in to dimensional-analysis grading (Unit 4 ontology): if the
+            # reference/master solution itself states a unit for this step's output,
+            # the synthesized rubric requires students to state it too.
+            lhs_symbol = str(list(lhs.free_symbols)[0]) if lhs is not None and lhs.free_symbols else None
+            require_units = bool(
+                lhs_symbol
+                and lhs_symbol in self.grounder.CANONICAL_UNIT_MAP
+                and self.grounder.extract_trailing_unit(raw_text) is not None
+            )
+
             steps.append(RubricStep(
                 step_id=step_id,
                 concept=concept if concept != "ScientificLaw" else "General",
@@ -112,7 +122,8 @@ class RubricSynthesizer:
                 expected_bindings=expected_bindings,
                 expected_output_value=float(eval_value) if eval_value is not None else 0.0,
                 max_marks=0.0,  # filled in below, proportional to complexity
-                prerequisites=deps
+                prerequisites=deps,
+                require_units=require_units
             ))
 
             # Carry this step's own output forward for downstream steps.
@@ -173,7 +184,8 @@ class RubricSynthesizer:
                         "expected_bindings": s.expected_bindings,
                         "expected_output_value": s.expected_output_value,
                         "max_marks": s.max_marks,
-                        "prerequisites": s.prerequisites
+                        "prerequisites": s.prerequisites,
+                        "require_units": s.require_units
                     }
                     for s in strategy.steps
                 ]
